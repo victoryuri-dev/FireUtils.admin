@@ -59,9 +59,9 @@ export async function revogarLicenca(id) {
   if (error) throw error
 }
 
-// Ações do Auth (convidar, link, banir, excluir) vão para a Edge Function.
-export async function acaoUsuario(corpo) {
-  const { data, error } = await supabase.functions.invoke('admin-usuarios', { body: corpo })
+// Chama uma Edge Function com o JWT do admin; erros viram Error com a mensagem do servidor.
+export async function chamarFuncao(nome, corpo) {
+  const { data, error } = await supabase.functions.invoke(nome, { body: corpo })
   if (error) {
     let mensagem = error.message
     try {
@@ -72,6 +72,9 @@ export async function acaoUsuario(corpo) {
   }
   return data
 }
+
+// Ações do Auth (convidar, link, banir, excluir) vão para a Edge Function.
+export const acaoUsuario = (corpo) => chamarFuncao('admin-usuarios', corpo)
 
 export async function listarAuditoria({ pagina = 0, porPagina = 50 }) {
   const { data, error, count } = await supabase

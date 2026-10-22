@@ -128,3 +128,52 @@ a.btn { text-decoration: none; display: inline-block; }
 .etiqueta-correcao { background: #4a2a1d; color: #f2b48d; }
 .progresso { display: flex; flex-direction: column; gap: 4px; margin: 12px 0; }
 .progresso progress { width: 100%; accent-color: var(--marca); }
+
+/* Fase 3: biblioteca */
+.contagem { display: inline-block; min-width: 18px; padding: 0 6px; margin-left: 4px; border-radius: 99px; font-size: 11px; text-align: center; }
+.contagem-erro { background: #7a0f1c; color: #fff; }
+.contagem-aviso { background: #8a6a1f; color: #fff; }
+.biblioteca { display: grid; grid-template-columns: 250px 1fr; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .biblioteca { grid-template-columns: 1fr; } }
+.categorias { background: var(--bg-2); border: 1px solid var(--borda); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 2px; }
+.categorias-topo { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px 8px; }
+.categorias-topo .btn { padding: 4px 10px; }
+.cat-linha { display: flex; align-items: center; border-radius: 6px; }
+.cat-linha.ativa, .cat-item.ativa { background: var(--bg-3); }
+.cat-item { flex: 1; display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--texto); font: inherit; padding: 6px 8px; border-radius: 6px; cursor: pointer; text-align: left; min-width: 0; }
+.cat-item span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cat-item em { font-style: normal; color: var(--texto-2); font-size: 12px; }
+.cat-acoes { display: none; gap: 2px; padding-right: 4px; }
+.cat-linha:hover .cat-acoes, .cat-linha.ativa .cat-acoes { display: flex; }
+.cat-acoes button { background: var(--bg); border: 1px solid var(--borda); color: var(--texto-2); border-radius: 4px; cursor: pointer; padding: 2px 6px; }
+.cat-acoes button:disabled { opacity: .4; cursor: default; }
+.todas-icone { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--borda); }
+.todas-icone .muted { flex: 1; font-size: 12px; }
+.todas-icone .btn { padding: 4px 10px; }
+
+.miniatura { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: var(--bg); flex: none; }
+.miniatura-grande { width: 72px; height: 72px; }
+.miniatura.vazia, .miniatura.quebrada { display: grid; place-items: center; color: var(--texto-2); border: 1px dashed var(--borda); font-size: 12px; }
+.miniatura.quebrada { color: #ff8a97; border-color: #8a2230; }
+.miniatura-atual { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+.opcao-linha { flex-direction: row; align-items: center; gap: 6px; color: var(--texto); font-size: 13px; }
+.busca-input { flex: 1; min-width: 200px; }
+.grade-familias { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.familia-card { background: var(--bg-2); border: 1px solid var(--borda); border-radius: 8px; padding: 10px; display: grid; grid-template-columns: 72px 1fr; gap: 10px; }
+.familia-card.com-erro { border-color: #8a2230; }
+.familia-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.familia-info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.familia-selos { display: flex; gap: 4px; flex-wrap: wrap; }
+.familia-acoes { grid-column: 1 / -1; display: flex; gap: 6px; justify-content: flex-end; }
+.familia-acoes .btn { padding: 5px 10px; }
+.selo { display: inline-block; font-size: 10px; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--borda); white-space: nowrap; }
+.selo-erro, .selo-orfao { border-color: #8a2230; color: #ff8a97; }
+.selo-aviso, .selo-so_publicado { border-color: #8a6a1f; color: #e8c872; }
+.selo-em_uso { border-color: #2f7a47; color: #8fe0a8; }
+.soltar-mini { padding: 12px; margin: 8px 0; }
+.painel-erro { border-color: #8a2230; }
+.lista-problemas { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.card-erro { border-color: #8a2230; }
+.card-erro strong { color: #ff8a97; }
+.diff-bloco { display: flex; gap: 8px; margin: 4px 0; flex-wrap: wrap; }
+.diff-novo { color: #8fe0a8; } .diff-alterado { color: #8dbcf2; } .diff-removido { color: #ff8a97; }

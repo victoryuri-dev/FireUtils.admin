@@ -1,4 +1,5 @@
-import { chaveAnon, supabase, urlSupabase } from './supabase.js'
+import { supabase } from './supabase.js'
+import { enviarParaBucket } from './storage.js'
 import { nomeDaAssinatura, nomeDoHash } from './versoes.js'
 
 const BUCKET = 'plugin-releases'
@@ -62,27 +63,6 @@ export async function excluirRascunho(r) {
   await removerArquivos(arquivosDaRelease(r)).catch(() => {})
 }
 
-// supabase-js não informa progresso de upload; XHR informa.
 // Sem upsert: nunca sobrescreve um arquivo que já exista no bucket.
-export async function enviarArquivo(nome, blob, aoProgredir) {
-  const { data } = await supabase.auth.getSession()
-  const token = data.session?.access_token
-  if (!token) throw new Error('Sessão expirada. Entre de novo.')
-  await new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest()
-    xhr.open('POST', `${urlSupabase}/storage/v1/object/${BUCKET}/${encodeURIComponent(nome)}`)
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`)
-    xhr.setRequestHeader('apikey', chaveAnon)
-    xhr.setRequestHeader('x-upsert', 'false')
-    xhr.setRequestHeader('Content-Type', blob.type || 'application/octet-stream')
-    xhr.upload.onprogress = (e) => e.lengthComputable && aoProgredir?.(e.loaded / e.total)
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) return resolve()
-      let msg = `Falha no envio de ${nome} (${xhr.status}).`
-      try { msg = JSON.parse(xhr.responseText).message || msg } catch { /* mantém */ }
-      reject(new Error(msg))
-    }
-    xhr.onerror = () => reject(new Error(`Falha de rede ao enviar ${nome}.`))
-    xhr.send(blob)
-  })
-}
+export const enviarArquivo = (nome, blob, aoProgredir) =>
+  enviarParaBucket(BUCKET, nome, blob, { aoProgredir })
