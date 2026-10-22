@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { definirIconeTodas, excluirFamilia, salvarOrdem } from '../../lib/apiCatalogo.js'
+import { definirIconeTodas, excluirFamilia, importarCatalogo, salvarOrdem } from '../../lib/apiCatalogo.js'
 import { BUCKET_ASSETS, ROTULO_PROBLEMA, reordenar } from '../../lib/catalogo.js'
 import { enviarParaBucket } from '../../lib/storage.js'
 import { traduzirErroBanco } from '../../lib/licencas.js'
@@ -19,6 +19,7 @@ export default function Catalogo() {
   const [formCategoria, setFormCategoria] = useState(null)
   const [excluindo, setExcluindo] = useState(null)
   const [erro, setErro] = useState('')
+  const [importando, setImportando] = useState(false)
   const entradaTodas = useRef(null)
 
   const familiasDe = (id) => b.familias.filter((f) => f.category_id === id)
@@ -56,6 +57,16 @@ export default function Catalogo() {
     } catch (e) { setErro(e.message ?? traduzirErroBanco(e)) }
   }
 
+  async function importar() {
+    setImportando(true)
+    setErro('')
+    try {
+      await importarCatalogo(false)
+      await b.atualizarTudo()
+    } catch (e) { setErro(e.message) }
+    setImportando(false)
+  }
+
   async function excluir(f) {
     setExcluindo(null)
     setErro('')
@@ -78,7 +89,17 @@ export default function Catalogo() {
         <p className="aviso erro">Não foi possível conferir os arquivos: {b.erroVerificacao}. As miniaturas e os avisos de itens fantasmas ficam indisponíveis.</p>
       )}
       {vazio && (
-        <div className="vazio"><p>O catálogo está vazio.</p><small>Se já existe um catálogo publicado, importe-o na aba <strong>Publicação</strong>.</small></div>
+        <div className="vazio">
+          <p>O rascunho do catálogo está vazio.</p>
+          {b.verificacao?.publicacao?.existe ? (
+            <>
+              <small>Já existe um catálogo publicado. Importe-o para começar a editar (os arquivos e o catálogo publicado não são alterados).</small>
+              <div><button type="button" className="btn btn-primario" onClick={importar} disabled={importando}>{importando ? 'Importando…' : 'Importar catálogo publicado'}</button></div>
+            </>
+          ) : (
+            <small>Crie uma categoria para começar.</small>
+          )}
+        </div>
       )}
 
       <div className="biblioteca">

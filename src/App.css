@@ -177,3 +177,4 @@ a.btn { text-decoration: none; display: inline-block; }
 .card-erro strong { color: #ff8a97; }
 .diff-bloco { display: flex; gap: 8px; margin: 4px 0; flex-wrap: wrap; }
 .diff-novo { color: #8fe0a8; } .diff-alterado { color: #8dbcf2; } .diff-removido { color: #ff8a97; }
+.vazio .btn { margin-top: 12px; }
