@@ -4,7 +4,17 @@ Painel de administração do **Fire Utils** (plugin de proteção contra incênd
 
 Seções: **Usuários** (e licenças), **Versões** (versionamento e patch notes) e **Biblioteca** (famílias do Revit).
 
-> Estado atual: **Fase 0** (base, login e guarda de admin). As três seções ainda são placeholders.
+> Estado atual: **Fase 0** (base, login, guarda de admin) e **Fase 1** (usuários, licenças, auditoria) prontas. Versões e Biblioteca ainda são placeholders.
+
+## Backend necessário (repositório `ETOS.FireUtils`)
+
+O painel depende de migrações e de uma Edge Function que ficam no repositório do site:
+
+- `20261020120000_admin_base.sql`: `admins`, `is_admin()`, `admin_auditoria`, políticas de admin em `licencas`/`perfis`, trigger de auditoria de licenças.
+- `20261020130000_admin_usuarios_rpc.sql`: `admin_listar_usuarios` e `admin_resumo_licencas`.
+- Edge Function `admin-usuarios`: convidar, link de redefinição, banir/desbanir, excluir.
+
+Sem elas aplicadas, o login cai em "Sem permissão".
 
 ## Rodando
 
