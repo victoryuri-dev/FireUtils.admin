@@ -4,7 +4,7 @@ Painel de administração do **Fire Utils** (plugin de proteção contra incênd
 
 Seções: **Usuários** (e licenças), **Versões** (versionamento e patch notes) e **Biblioteca** (famílias do Revit).
 
-> Estado atual: **Fase 0** (base, login, guarda de admin) e **Fase 1** (usuários, licenças, auditoria) prontas. Versões e Biblioteca ainda são placeholders.
+> Estado atual: **Fase 0** (base, login, guarda de admin) e **Fase 1** (usuários, licenças, auditoria) e **Fase 2** (versões) prontas. Biblioteca ainda é placeholder.
 
 ## Backend necessário (repositório `ETOS.FireUtils`)
 
@@ -12,6 +12,7 @@ O painel depende de migrações e de uma Edge Function que ficam no repositório
 
 - `20261020120000_admin_base.sql`: `admins`, `is_admin()`, `admin_auditoria`, políticas de admin em `licencas`/`perfis`, trigger de auditoria de licenças.
 - `20261020130000_admin_usuarios_rpc.sql`: `admin_listar_usuarios` e `admin_resumo_licencas`.
+- `20261020140000_plugin_releases.sql`: tabela `plugin_releases`, políticas do bucket `plugin-releases` e backfill dos arquivos que já estão lá.
 - Edge Function `admin-usuarios`: convidar, link de redefinição, banir/desbanir, excluir.
 
 Sem elas aplicadas, o login cai em "Sem permissão".
@@ -54,3 +55,12 @@ test/            node --test
 ```
 
 As migrações e Edge Functions do Supabase ficam no repositório do site (`ETOS.FireUtils`).
+
+## Publicar uma versão
+
+1. **Instalador:** gere o `FireUtils-Setup-X.Y.Z.exe` (build.ps1). O painel calcula o SHA-256 no navegador e sobe o `.sha256` sozinho.
+2. **Pacote (só código Python):** no seu computador, rode `installer/publicar-pacote.ps1` (repositório `FireUtils.extension`). Ele assina o `.zip` com a chave RSA privada e gera o `.sig`. **A chave privada nunca vai para o painel**, que só recebe o `.zip` e o `.sig` prontos. O nome deve ser `FireUtils-Pacote-X.Y.Z-base-B.zip`, onde `B` é a menor versão de instalador que aceita o pacote.
+3. Em **Versões → Nova versão**, escolha o tipo, arraste o(s) arquivo(s), confira versão/base, escreva as notas e salve como **rascunho**.
+4. Abra o rascunho e clique em **Publicar**. O painel confere que os arquivos estão no bucket; só então a versão fica visível para os clientes. É possível **despublicar** depois; só rascunho pode ser excluído.
+
+O upload passa pelo Storage do Supabase, então o limite de tamanho do projeto/bucket precisa comportar o instalador.

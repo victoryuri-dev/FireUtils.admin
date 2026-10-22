@@ -103,3 +103,28 @@ select { background: var(--bg); border: 1px solid var(--borda); color: var(--tex
 .coluna-cheia { grid-column: 1 / -1; }
 .atalhos { display: flex; gap: 6px; flex-wrap: wrap; }
 .json { margin: 0; padding: 10px; background: var(--bg); border-radius: 6px; overflow-x: auto; font-size: 12px; }
+
+/* Fase 2: versões */
+.espaco { flex: 1; }
+a.btn { text-decoration: none; display: inline-block; }
+.quebra { word-break: break-all; }
+.seletor-tipo { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.opcao { flex-direction: row; align-items: center; gap: 8px; border: 1px solid var(--borda); border-radius: 6px; padding: 8px 12px; cursor: pointer; color: var(--texto); font-size: 13px; }
+.opcao.ativa { border-color: var(--marca); background: var(--bg-3); }
+.soltar { display: flex; flex-direction: column; gap: 4px; border: 1px dashed var(--borda); border-radius: 8px; padding: 18px; margin-bottom: 12px; cursor: pointer; text-align: center; }
+.soltar.sobre, .soltar:hover { border-color: var(--marca); background: var(--bg-3); }
+.duas-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 10px 0; align-items: start; }
+@media (max-width: 900px) { .duas-colunas { grid-template-columns: 1fr; } }
+.notas-editor { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.nota-linha { display: flex; gap: 4px; width: 100%; }
+.nota-linha input { flex: 1; min-width: 0; }
+.nota-linha .btn { padding: 6px 9px; }
+.previa { background: var(--bg); border: 1px solid var(--borda); border-radius: 8px; padding: 12px 14px; }
+.previa h4 { margin: 4px 0 8px; font-family: 'Space Grotesk', sans-serif; }
+.previa ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.etiqueta { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; padding: 1px 6px; border-radius: 4px; margin-right: 6px; }
+.etiqueta-novo { background: #1d3a29; color: #8fe0a8; }
+.etiqueta-melhoria { background: #1d2f4a; color: #8dbcf2; }
+.etiqueta-correcao { background: #4a2a1d; color: #f2b48d; }
+.progresso { display: flex; flex-direction: column; gap: 4px; margin: 12px 0; }
+.progresso progress { width: 100%; accent-color: var(--marca); }

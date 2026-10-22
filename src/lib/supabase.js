@@ -1,9 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 
-const url = import.meta.env.VITE_SUPABASE_URL
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+export const urlSupabase = import.meta.env.VITE_SUPABASE_URL
+export const chaveAnon = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export const configurado = Boolean(url && anonKey)
+export const configurado = Boolean(urlSupabase && chaveAnon)
 
 // Somente a anon key no navegador. Privilégios vêm do JWT + RLS + is_admin().
-export const supabase = configurado ? createClient(url, anonKey) : null
+export const supabase = configurado ? createClient(urlSupabase, chaveAnon) : null
