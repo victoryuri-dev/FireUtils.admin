@@ -127,7 +127,7 @@ export default function Catalogo() {
           <div className="todas-icone">
             <Miniatura chave={b.config?.todas_icon_key} versao={b.verificacao?.publicacao?.publicado_em} nome="Todas" />
             <span className="muted">Ícone de "Todas"</span>
-            <input ref={entradaTodas} type="file" accept=".png,.jpg,.jpeg" hidden onChange={(e) => e.target.files[0] && trocarIconeTodas(e.target.files[0])} />
+            <input ref={entradaTodas} type="file" accept=".png,.jpg,.jpeg,.svg" hidden onChange={(e) => e.target.files[0] && trocarIconeTodas(e.target.files[0])} />
             <button type="button" className="btn btn-sec" onClick={() => entradaTodas.current?.click()}>Trocar</button>
           </div>
         </aside>

@@ -21,6 +21,8 @@ test('chaves de miniatura e ícone', () => {
   assert.equal(chaveMiniatura('ext', 'Extintor ABC'), 'thumbnails/ext/extintor-abc.png')
   assert.equal(chaveIcone('ext', 'foo.JPEG'), 'icons/ext.jpg')
   assert.equal(chaveIcone('ext', 'foo.png'), 'icons/ext.png')
+  assert.equal(chaveIcone('ext', 'foo.svg'), 'icons/ext.svg')
+  assert.deepEqual(validarCategoria({ nome: 'Z', icone: { name: 'i.svg' } }, []), [])
 })
 
 const existentes = [{ id: 'a__extintor-k', nome: 'Extintor K', ordem: 0 }]
@@ -46,7 +48,7 @@ test('validarCategoria', () => {
   const cats = [{ id: 'alfa', nome: 'Alfa' }]
   assert.deepEqual(validarCategoria({ nome: 'Beta' }, cats), [])
   assert.match(validarCategoria({ nome: 'ALFA' }, cats)[0], /Já existe/)
-  assert.match(validarCategoria({ nome: 'Beta', icone: arq('i.gif') }, cats)[0], /PNG ou JPG/)
+  assert.match(validarCategoria({ nome: 'Beta', icone: arq('i.gif') }, cats)[0], /PNG, JPG ou SVG/)
   assert.equal(nomeEmUso('alfa', cats)?.id, 'alfa')
 })
 

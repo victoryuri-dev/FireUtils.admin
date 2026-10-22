@@ -35,6 +35,7 @@ export function chaveRfa(categoriaId, nome, sha256, chavesExistentes) {
 }
 
 export const chaveMiniatura = (categoriaId, nome) => `thumbnails/${categoriaId}/${slugify(nome)}.png`
+export const EXTENSOES_ICONE = ['png', 'jpg', 'jpeg', 'svg']
 export const chaveIcone = (categoriaId, nomeArquivo) => `icons/${categoriaId}.${extensao(nomeArquivo) === 'jpeg' ? 'jpg' : extensao(nomeArquivo)}`
 
 /** Erros de uma família nova/editada. `f`: { nome, category_id, rfa, miniatura }, `existentes`: famílias já cadastradas. */
@@ -69,7 +70,7 @@ export function validarCategoria(c, existentes, { editandoId = null } = {}) {
     if (dup) erros.push(`Já existe uma categoria chamada "${dup.nome}".`)
     if (!editandoId && existentes.some((e) => e.id === slugify(nome))) erros.push('O nome gera o mesmo identificador de outra categoria.')
   }
-  if (c.icone && !['png', 'jpg', 'jpeg'].includes(extensao(c.icone.name))) erros.push('O ícone deve ser PNG ou JPG.')
+  if (c.icone && !EXTENSOES_ICONE.includes(extensao(c.icone.name))) erros.push('O ícone deve ser PNG, JPG ou SVG.')
   return erros
 }
 

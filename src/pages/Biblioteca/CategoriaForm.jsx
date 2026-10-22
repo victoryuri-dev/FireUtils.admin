@@ -60,7 +60,7 @@ export default function CategoriaForm({ categoria, categorias, totalFamilias, on
         {editando && categoria.icon_key && (
           <div className="miniatura-atual"><Miniatura chave={categoria.icon_key} versao={categoria.atualizado_em} nome={categoria.nome} grande /></div>
         )}
-        <Seletor rotulo={editando ? 'Substituir o ícone (opcional)' : 'Ícone (PNG ou JPG, opcional)'} aceita=".png,.jpg,.jpeg" arquivo={icone} onArquivo={setIcone} dica="Arraste o arquivo aqui ou clique" />
+        <Seletor rotulo={editando ? 'Substituir o ícone (opcional)' : 'Ícone (PNG, JPG ou SVG, opcional)'} aceita=".png,.jpg,.jpeg,.svg" arquivo={icone} onArquivo={setIcone} dica="Arraste o arquivo aqui ou clique" />
         {editando && <p className="aviso">O identificador ({categoria.id}) não muda ao renomear.</p>}
         {erros.map((m) => <p key={m} className="aviso erro">{m}</p>)}
         <div className="modal-acoes">

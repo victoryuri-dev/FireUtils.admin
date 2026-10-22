@@ -20,11 +20,16 @@ export default function FamiliaForm({ familia, categoriaInicial, categorias, fam
     rfa: null,
     miniatura: null,
     removerMiniatura: false,
+    usarExistente: false,
   })
   const [erros, setErros] = useState([])
   const [etapa, setEtapa] = useState('')
   const [progresso, setProgresso] = useState(0)
   const [salvando, setSalvando] = useState(false)
+
+  // Miniatura que já está no bucket com o nome convencional, mas que a família não usa.
+  const chaveSugerida = editando && !familia.thumbnail_key ? chaveMiniatura(f.category_id, familia.nome) : null
+  const temSugestao = Boolean(chaveSugerida) && chavesAssets.has(chaveSugerida) && f.category_id === familia.category_id
 
   async function salvar(e) {
     e.preventDefault()
@@ -62,6 +67,8 @@ export default function FamiliaForm({ familia, categoriaInicial, categorias, fam
         await enviarParaBucket(BUCKET_ASSETS, chave, f.miniatura, { upsert: true, aoProgredir: setProgresso })
         if (!chavesAssets.has(chave)) novos.push({ bucket: BUCKET_ASSETS, chave })
         campos.thumbnail_key = chave
+      } else if (temSugestao && f.usarExistente) {
+        campos.thumbnail_key = chaveSugerida
       } else if (editando && f.removerMiniatura && familia.thumbnail_key) {
         campos.thumbnail_key = null
       }
@@ -112,6 +119,15 @@ export default function FamiliaForm({ familia, categoriaInicial, categorias, fam
             <label className="opcao-linha">
               <input type="checkbox" checked={f.removerMiniatura} onChange={(e) => setF({ ...f, removerMiniatura: e.target.checked })} />
               Remover miniatura
+            </label>
+          </div>
+        )}
+        {temSugestao && !f.miniatura && (
+          <div className="miniatura-atual">
+            <Miniatura chave={chaveSugerida} nome={familia.nome} grande />
+            <label className="opcao-linha">
+              <input type="checkbox" checked={f.usarExistente} onChange={(e) => setF({ ...f, usarExistente: e.target.checked })} />
+              Usar a miniatura que já está no bucket ({chaveSugerida})
             </label>
           </div>
         )}
