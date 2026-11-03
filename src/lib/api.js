@@ -74,11 +74,7 @@ export async function chamarFuncao(nome, corpo) {
 }
 
 // Ações do Auth (convidar, link, banir, excluir) vão para a Edge Function.
-// O endereço (slug) da função no Supabase é o do momento da criação, e não o nome
-// exibido: ela foi criada como "hyper-task" e depois renomeada para "admin-usuarios".
-// Se for recriada com o slug admin-usuarios, troque a constante.
-export const FUNCAO_USUARIOS = 'hyper-task'
-export const acaoUsuario = (corpo) => chamarFuncao(FUNCAO_USUARIOS, corpo)
+export const acaoUsuario = (corpo) => chamarFuncao('admin-usuarios', corpo)
 
 export async function listarAuditoria({ pagina = 0, porPagina = 50 }) {
   const { data, error, count } = await supabase
