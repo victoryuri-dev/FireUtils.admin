@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
   diasAte, estenderExpiracao, hojeNoBrasil, situacaoEfetiva, somarAnos, somarDias,
-  traduzirErroBanco, validarLicenca, vencendoEm,
+  traduzirErroBanco, validarLicenca, validarTeste, vencendoEm,
 } from '../src/lib/licencas.js'
 
 test('hojeNoBrasil usa UTC-3', () => {
@@ -52,4 +52,13 @@ test('traduzirErroBanco', () => {
   assert.match(traduzirErroBanco({ code: '23505' }), /já tem uma licença/)
   assert.match(traduzirErroBanco({ code: '23514' }), /anterior ao início/)
   assert.equal(traduzirErroBanco({ message: 'x' }), 'x')
+})
+
+test('validarTeste', () => {
+  assert.deepEqual(validarTeste({ modulo: 'pro', dias: 5 }), [])
+  assert.deepEqual(validarTeste({ modulo: 'pro', dias: '30' }), [])
+  assert.equal(validarTeste({ modulo: 'pro', dias: 0 }).length, 1)
+  assert.equal(validarTeste({ modulo: 'pro', dias: 91 }).length, 1)
+  assert.equal(validarTeste({ modulo: 'pro', dias: 2.5 }).length, 1)
+  assert.equal(validarTeste({ modulo: 'x', dias: 5 }).length, 1)
 })

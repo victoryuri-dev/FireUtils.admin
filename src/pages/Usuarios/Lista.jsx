@@ -5,6 +5,7 @@ import { hojeNoBrasil, traduzirErroBanco } from '../../lib/licencas.js'
 import { dataHoraBr } from '../../lib/formato.js'
 import ChipLicenca from '../../components/Chip.jsx'
 import Resumo from './Resumo.jsx'
+import TesteNovos from './TesteNovos.jsx'
 
 const POR_PAGINA = 25
 const FILTROS = [
@@ -62,6 +63,7 @@ export default function Lista() {
   return (
     <>
       <Resumo />
+      <TesteNovos />
 
       <div className="barra">
         <form className="busca" onSubmit={buscar}>

@@ -98,3 +98,12 @@ export function traduzirErroBanco(erro) {
   if (erro.code === '42501') return 'Sem permissão para esta operação.'
   return erro.message || 'Erro inesperado.'
 }
+
+/** Configuração do teste grátis para novos usuários: { modulo, dias }. */
+export function validarTeste(t) {
+  const erros = []
+  if (!MODULOS.some((m) => m.valor === t.modulo)) erros.push('Escolha o módulo.')
+  const dias = Number(t.dias)
+  if (!Number.isInteger(dias) || dias < 1 || dias > 90) erros.push('Os dias devem ser um número inteiro de 1 a 90.')
+  return erros
+}

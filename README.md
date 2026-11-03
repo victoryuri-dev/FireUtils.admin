@@ -80,3 +80,7 @@ As tabelas do catálogo são o **rascunho**. O que a dockpane lê continua sendo
 Substituir o `.rfa` de uma família nunca sobrescreve o arquivo antigo: o novo vai para uma chave com o hash (`<categoria>/<slug>-<hash8>.rfa`), e o antigo vira órfão depois de publicar. Assim a dockpane não baixa um arquivo cujo hash não bate com o catálogo publicado.
 
 Primeira vez: em **Publicação → Importar catálogo publicado** para trazer o catálogo atual para as tabelas.
+
+## Teste grátis para novos usuários
+
+Em **Usuários**, o cartão *Teste grátis para novos usuários* liga/desliga e ajusta o teste (módulo e dias) que quem se cadastra recebe automaticamente. Padrão: **PRO por 5 dias**. Vale só para contas novas e a licença concedida pode ser editada depois como qualquer outra. Exige a migração `20261103130000_teste_novos_usuarios.sql` (ETOS.FireUtils); o gatilho nunca impede um cadastro, e a confirmação de e-mail ligada no Auth evita teste para e-mail falso.

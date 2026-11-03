@@ -85,3 +85,15 @@ export async function listarAuditoria({ pagina = 0, porPagina = 50 }) {
   if (error) throw error
   return { linhas: data ?? [], total: count ?? 0 }
 }
+
+// Teste grátis concedido automaticamente a cada novo usuário (uma linha só).
+export async function lerConfigTeste() {
+  const { data, error } = await supabase.from('licenca_teste_config').select('ativo, modulo, dias').maybeSingle()
+  if (error) throw error
+  return data
+}
+
+export async function salvarConfigTeste({ ativo, modulo, dias }) {
+  const { error } = await supabase.from('licenca_teste_config').update({ ativo, modulo, dias: Number(dias) }).eq('id', true)
+  if (error) throw error
+}
