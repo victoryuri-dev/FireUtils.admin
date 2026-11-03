@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { removerOrfaos } from '../../lib/apiCatalogo.js'
 import { BUCKET_ASSETS, ROTULO_SITUACAO } from '../../lib/catalogo.js'
 import { formatarTamanho } from '../../lib/versoes.js'
-import ConfirmaDigitando from '../../components/ConfirmaDigitando.jsx'
+import Confirma from '../../components/Confirma.jsx'
 import { useBiblioteca } from './contexto.jsx'
 import Miniatura from './Miniatura.jsx'
 
@@ -94,8 +94,9 @@ export default function Arquivos() {
       <p className="aviso">"Só no publicado": o catálogo atual não usa, mas o catalog.json publicado ainda cita; some do bucket depois que você publicar.</p>
 
       {confirmando && (
-        <ConfirmaDigitando
-          titulo="Remover arquivos órfãos" nome={`remover ${marcados.size}`} rotuloAcao="Remover"
+        <Confirma
+          titulo="Remover arquivos órfãos" item={`${marcados.size} arquivo(s)`}
+          mensagem="Serão apagados dos buckets. Esta ação não pode ser desfeita." rotuloAcao="Remover"
           onCancelar={() => setConfirmando(false)} onConfirmar={remover}
         />
       )}

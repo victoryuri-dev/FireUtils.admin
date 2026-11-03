@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { acaoUsuario, buscarPerfil, buscarUsuario, revogarLicenca } from '../../lib/api.js'
 import { hojeNoBrasil, rotuloModulo, rotuloSituacao, situacaoEfetiva, traduzirErroBanco } from '../../lib/licencas.js'
 import { dataBr, dataHoraBr } from '../../lib/formato.js'
-import ConfirmaDigitando from '../../components/ConfirmaDigitando.jsx'
+import Confirma from '../../components/Confirma.jsx'
 import { linhasDoResponsavelTecnico, textoSeguro } from '../../lib/perfil.js'
 import LicencaForm from './LicencaForm.jsx'
 
@@ -146,9 +146,10 @@ export default function Detalhe() {
         />
       )}
       {excluindo && (
-        <ConfirmaDigitando
+        <Confirma
           titulo="Excluir usuário"
-          nome={usuario.email}
+          item={usuario.email}
+          mensagem="A conta e as licenças serão apagadas. Esta ação não pode ser desfeita."
           onCancelar={() => setExcluindo(false)}
           onConfirmar={async () => {
             setExcluindo(false)

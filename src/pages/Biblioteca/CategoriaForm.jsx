@@ -3,7 +3,7 @@ import { atualizarCategoria, criarCategoria, excluirCategoria } from '../../lib/
 import { enviarParaBucket } from '../../lib/storage.js'
 import { BUCKET_ASSETS, chaveIcone, slugify, validarCategoria } from '../../lib/catalogo.js'
 import { traduzirErroBanco } from '../../lib/licencas.js'
-import ConfirmaDigitando from '../../components/ConfirmaDigitando.jsx'
+import Confirma from '../../components/Confirma.jsx'
 import Seletor from './Seletor.jsx'
 import Miniatura from './Miniatura.jsx'
 
@@ -73,7 +73,7 @@ export default function CategoriaForm({ categoria, categorias, totalFamilias, on
           <button type="submit" className="btn btn-primario" disabled={salvando}>Salvar</button>
         </div>
       </form>
-      {excluindo && <ConfirmaDigitando titulo="Excluir categoria" nome={categoria.nome} onCancelar={() => setExcluindo(false)} onConfirmar={excluir} />}
+      {excluindo && <Confirma titulo="Excluir categoria" item={categoria.nome} onCancelar={() => setExcluindo(false)} onConfirmar={excluir} />}
     </div>
   )
 }

@@ -51,7 +51,7 @@ Framework Vite; defina as duas variáveis acima. `vercel.json` já faz o rewrite
 
 ```
 src/pages/{Login,Usuarios,Versoes,Biblioteca}
-src/components   Layout, Sidebar, Protegida, ConfirmaDigitando
+src/components   Layout, Sidebar, Protegida, Confirma
 src/lib          cliente Supabase, auth, helpers puros
 test/            node --test
 ```

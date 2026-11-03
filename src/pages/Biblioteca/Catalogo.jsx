@@ -4,7 +4,7 @@ import { BUCKET_ASSETS, ROTULO_PROBLEMA, reordenar } from '../../lib/catalogo.js
 import { enviarParaBucket } from '../../lib/storage.js'
 import { traduzirErroBanco } from '../../lib/licencas.js'
 import { formatarTamanho } from '../../lib/versoes.js'
-import ConfirmaDigitando from '../../components/ConfirmaDigitando.jsx'
+import Confirma from '../../components/Confirma.jsx'
 import { useBiblioteca } from './contexto.jsx'
 import Miniatura from './Miniatura.jsx'
 import FamiliaForm from './FamiliaForm.jsx'
@@ -197,8 +197,9 @@ export default function Catalogo() {
         />
       )}
       {excluindo && (
-        <ConfirmaDigitando
-          titulo="Excluir família" nome={excluindo.nome}
+        <Confirma
+          titulo="Excluir família" item={excluindo.nome}
+          mensagem="Sai do rascunho do catálogo; os arquivos só são removidos se você apagar os órfãos depois de publicar."
           onCancelar={() => setExcluindo(null)} onConfirmar={() => excluir(excluindo)}
         />
       )}

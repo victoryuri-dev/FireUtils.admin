@@ -6,7 +6,7 @@ import {
 import { traduzirErroBanco } from '../../lib/licencas.js'
 import { formatarTamanho, normalizarNotas } from '../../lib/versoes.js'
 import { dataHoraBr } from '../../lib/formato.js'
-import ConfirmaDigitando from '../../components/ConfirmaDigitando.jsx'
+import Confirma from '../../components/Confirma.jsx'
 import EditorNotas from './EditorNotas.jsx'
 import PreviaNotas from './PreviaNotas.jsx'
 
@@ -108,9 +108,10 @@ export default function Detalhe() {
       </div>
 
       {confirmar && (
-        <ConfirmaDigitando
+        <Confirma
           titulo={confirmar === 'despublicar' ? 'Despublicar versão' : 'Excluir rascunho'}
-          nome={r.arquivo}
+          item={r.arquivo}
+          mensagem={confirmar === 'despublicar' ? 'Os clientes deixam de ver esta versão. Você pode publicá-la de novo depois.' : undefined}
           rotuloAcao={confirmar === 'despublicar' ? 'Despublicar' : 'Excluir'}
           onCancelar={() => setConfirmar(null)}
           onConfirmar={async () => {
