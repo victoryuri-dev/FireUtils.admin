@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { acaoUsuario, buscarPerfil, buscarUsuario, revogarLicenca } from '../../lib/api.js'
 import { hojeNoBrasil, rotuloModulo, rotuloSituacao, situacaoEfetiva, traduzirErroBanco } from '../../lib/licencas.js'
 import { dataBr, dataHoraBr } from '../../lib/formato.js'
 import ConfirmaDigitando from '../../components/ConfirmaDigitando.jsx'
+import { linhasDoResponsavelTecnico, textoSeguro } from '../../lib/perfil.js'
 import LicencaForm from './LicencaForm.jsx'
 
 export default function Detalhe() {
@@ -62,6 +63,7 @@ export default function Detalhe() {
   if (!usuario) return <p className="aviso erro">{erro || 'Usuário não encontrado.'} <Link to="/usuarios">Voltar</Link></p>
 
   const usados = usuario.licencas.map((l) => l.modulo)
+  const rt = linhasDoResponsavelTecnico(perfil?.responsavel_tecnico)
 
   return (
     <>
@@ -73,9 +75,16 @@ export default function Detalhe() {
       <div className="painel">
         <h3>Perfil</h3>
         <dl className="dados">
-          <dt>Nome</dt><dd>{perfil?.nome || '—'}</dd>
-          <dt>Telefone</dt><dd>{perfil?.telefone || '—'}</dd>
-          <dt>Responsável técnico</dt><dd>{perfil?.responsavel_tecnico || '—'}</dd>
+          <dt>Nome</dt><dd>{textoSeguro(perfil?.nome) || '—'}</dd>
+          <dt>Telefone</dt><dd>{textoSeguro(perfil?.telefone) || '—'}</dd>
+          <dt>Responsável técnico</dt>
+          <dd>
+            {rt.length === 0 ? '—' : (
+              <dl className="dados dados-aninhado">
+                {rt.map(([rotulo, valor]) => (<Fragment key={rotulo}><dt>{rotulo}</dt><dd>{valor}</dd></Fragment>))}
+              </dl>
+            )}
+          </dd>
           <dt>Criado em</dt><dd>{dataHoraBr(usuario.criado_em)}</dd>
           <dt>Último login</dt><dd>{dataHoraBr(usuario.ultimo_login)}</dd>
         </dl>
