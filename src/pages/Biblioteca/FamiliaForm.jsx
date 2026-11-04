@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { atualizarFamilia, criarFamilia } from '../../lib/apiCatalogo.js'
 import { enviarParaBucket, removerDoBucket } from '../../lib/storage.js'
 import {
-  BUCKET_ASSETS, BUCKET_FAMILIAS, chaveMiniatura, chaveRfa, slugify, validarFamilia,
+  BUCKET_ASSETS, BUCKET_FAMILIAS, chaveArquivo, chaveMiniatura, extensaoDoArquivo, slugify, validarFamilia,
 } from '../../lib/catalogo.js'
 import { traduzirErroBanco } from '../../lib/licencas.js'
-import { sha256Hex } from '../../lib/versoes.js'
+import { sha256Arquivo } from '../../lib/sha256.js'
 import Seletor from './Seletor.jsx'
 import Miniatura from './Miniatura.jsx'
 
@@ -17,7 +17,7 @@ export default function FamiliaForm({ familia, categoriaInicial, categorias, fam
   const [f, setF] = useState({
     nome: familia?.nome ?? '',
     category_id: familia?.category_id ?? categoriaInicial ?? '',
-    rfa: null,
+    arquivo: null,
     miniatura: null,
     removerMiniatura: false,
     usarExistente: false,
@@ -46,18 +46,19 @@ export default function FamiliaForm({ familia, categoriaInicial, categorias, fam
       if (editando && f.category_id !== familia.category_id) campos.category_id = f.category_id
 
       let hash = familia?.sha256
-      if (f.rfa) {
+      if (f.arquivo) {
         setEtapa('Calculando SHA-256…')
-        hash = await sha256Hex(await f.rfa.arrayBuffer())
-        if (editando && hash === familia.sha256) {
-          throw new Error('Este .rfa é idêntico ao atual (mesmo SHA-256). Nada a substituir.')
-        }
-        const chave = chaveRfa(f.category_id, nome, hash, chavesFamilias)
-        setEtapa(`Enviando ${f.rfa.name}…`)
         setProgresso(0)
-        await enviarParaBucket(BUCKET_FAMILIAS, chave, f.rfa, { aoProgredir: setProgresso })
+        hash = await sha256Arquivo(f.arquivo, { aoProgredir: setProgresso })
+        if (editando && hash === familia.sha256) {
+          throw new Error('Este arquivo é idêntico ao atual (mesmo SHA-256). Nada a substituir.')
+        }
+        const chave = chaveArquivo(f.category_id, nome, hash, chavesFamilias, extensaoDoArquivo(f.arquivo.name))
+        setEtapa(`Enviando ${f.arquivo.name}…`)
+        setProgresso(0)
+        await enviarParaBucket(BUCKET_FAMILIAS, chave, f.arquivo, { aoProgredir: setProgresso })
         novos.push({ bucket: BUCKET_FAMILIAS, chave })
-        Object.assign(campos, { storage_key: chave, size_bytes: f.rfa.size, sha256: hash })
+        Object.assign(campos, { storage_key: chave, size_bytes: f.arquivo.size, sha256: hash })
       }
 
       if (f.miniatura) {
@@ -98,9 +99,9 @@ export default function FamiliaForm({ familia, categoriaInicial, categorias, fam
   }
 
   return (
-    <div className="modal-fundo" role="dialog" aria-modal="true" aria-label="Família">
+    <div className="modal-fundo" role="dialog" aria-modal="true" aria-label="Item do catálogo">
       <form className="modal modal-largo" onSubmit={salvar}>
-        <h2>{editando ? 'Editar família' : 'Nova família'}</h2>
+        <h2>{editando ? 'Editar item' : 'Novo item'}</h2>
         <div className="grade-form">
           <label className="coluna-cheia">Nome
             <input value={f.nome} maxLength={200} onChange={(e) => setF({ ...f, nome: e.target.value })} autoFocus />
@@ -132,8 +133,8 @@ export default function FamiliaForm({ familia, categoriaInicial, categorias, fam
           </div>
         )}
         <Seletor
-          rotulo={editando ? 'Substituir o .rfa (opcional)' : 'Arquivo .rfa'}
-          aceita=".rfa" arquivo={f.rfa} onArquivo={(a) => setF({ ...f, rfa: a })}
+          rotulo={editando ? 'Substituir o arquivo (.rfa ou .rvt, opcional)' : 'Arquivo (.rfa ou .rvt)'}
+          aceita=".rfa,.rvt" arquivo={f.arquivo} onArquivo={(a) => setF({ ...f, arquivo: a })}
           dica={editando ? `Atual: ${familia.storage_key}` : 'Arraste o arquivo aqui ou clique'}
         />
         <Seletor

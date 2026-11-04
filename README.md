@@ -71,7 +71,7 @@ O upload passa pelo Storage do Supabase, então o limite de tamanho do projeto/b
 
 As tabelas do catálogo são o **rascunho**. O que a dockpane lê continua sendo o `plugin-assets/catalog.json`, gerado pela Edge Function `admin-catalogo` só quando tudo confere.
 
-- **Catálogo:** categorias e famílias com miniatura, tamanho e selos de problema; criar, editar, substituir o `.rfa` ou a miniatura, mover de categoria, reordenar e excluir. O SHA-256 e o tamanho do `.rfa` são calculados no navegador.
+- **Catálogo:** categorias e itens (famílias `.rfa` e projetos `.rvt`) com miniatura, tamanho e selos de problema; criar, editar, substituir o `.rfa` ou a miniatura, mover de categoria, reordenar e excluir. O SHA-256 e o tamanho do `.rfa` são calculados no navegador.
 - **Arquivos:** tudo o que existe nos buckets (`revit-families`, `icons/` e `thumbnails/`), classificado como *Em uso*, *Só no publicado* ou *Órfão*, e o que cada item usa.
 - **Publicação:** o que mudou desde a última publicação, os problemas e os botões Publicar, Importar o catálogo publicado e Remover órfãos.
 
@@ -84,3 +84,7 @@ Primeira vez: em **Publicação → Importar catálogo publicado** para trazer o
 ## Teste grátis para novos usuários
 
 Em **Usuários**, o cartão *Teste grátis para novos usuários* liga/desliga e ajusta o teste (módulo e dias) que quem se cadastra recebe automaticamente. Padrão: **PRO por 5 dias**. Vale só para contas novas e a licença concedida pode ser editada depois como qualquer outra. Exige a migração `20261103130000_teste_novos_usuarios.sql` (ETOS.FireUtils); o gatilho nunca impede um cadastro, e a confirmação de e-mail ligada no Auth evita teste para e-mail falso.
+
+### Arquivos `.rvt`
+
+O catálogo aceita `.rvt` além de `.rfa`, com o mesmo fluxo (categoria, miniatura, SHA-256, publicação). Os itens `.rvt` entram em `families` no `catalog.json`; **quem consome distingue pela extensão do `storage_key`**, e o tratamento do `.rvt` fica por conta do consumidor. Exige a migração `20261104120000_catalogo_aceita_rvt.sql` (ETOS.FireUtils). O SHA-256 é calculado por partes (`src/lib/sha256.js`), então arquivos grandes não travam a aba.

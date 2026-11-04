@@ -181,3 +181,4 @@ a.btn { text-decoration: none; display: inline-block; }
 .teste-campos { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
 .teste-campos input[type=number] { width: 90px; }
 .dados-aninhado { grid-template-columns: 110px 1fr; gap: 4px 10px; }
+.selo-rvt { margin-left: 6px; border-color: #2f5f9a; color: #8dbcf2; }

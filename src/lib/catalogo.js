@@ -25,20 +25,32 @@ export const nomeEmUso = (nome, itens, ignorarId = null) =>
 
 const extensao = (nome) => (nome.match(/\.([^.]+)$/)?.[1] ?? '').toLowerCase()
 
-/** Chave do .rfa: <categoria>/<slug>.rfa; se já existir no bucket (órfão, ou
- * a família sendo substituída), <categoria>/<slug>-<hash8>.rfa — nunca
+// O catálogo guarda famílias (.rfa) e projetos (.rvt) no mesmo bucket; quem
+// consome o catálogo distingue pela extensão do storage_key.
+export const EXTENSOES_ARQUIVO = ['rfa', 'rvt']
+
+export const extensaoDoArquivo = (nome) => extensao(nome)
+
+/** 'rfa' | 'rvt' | null, a partir do storage_key. */
+export const tipoDoArquivo = (storageKey) => {
+  const e = extensao(storageKey ?? '')
+  return EXTENSOES_ARQUIVO.includes(e) ? e : null
+}
+
+/** Chave do arquivo: <categoria>/<slug>.<ext>; se já existir no bucket (órfão, ou
+ * o item sendo substituído), <categoria>/<slug>-<hash8>.<ext> — nunca
  * sobrescreve um arquivo que o catálogo publicado ainda pode estar usando. */
-export function chaveRfa(categoriaId, nome, sha256, chavesExistentes) {
+export function chaveArquivo(categoriaId, nome, sha256, chavesExistentes, ext) {
   const slug = slugify(nome)
-  const simples = `${categoriaId}/${slug}.rfa`
-  return chavesExistentes.has(simples) ? `${categoriaId}/${slug}-${sha256.slice(0, 8)}.rfa` : simples
+  const simples = `${categoriaId}/${slug}.${ext}`
+  return chavesExistentes.has(simples) ? `${categoriaId}/${slug}-${sha256.slice(0, 8)}.${ext}` : simples
 }
 
 export const chaveMiniatura = (categoriaId, nome) => `thumbnails/${categoriaId}/${slugify(nome)}.png`
 export const EXTENSOES_ICONE = ['png', 'jpg', 'jpeg', 'svg']
 export const chaveIcone = (categoriaId, nomeArquivo) => `icons/${categoriaId}.${extensao(nomeArquivo) === 'jpeg' ? 'jpg' : extensao(nomeArquivo)}`
 
-/** Erros de uma família nova/editada. `f`: { nome, category_id, rfa, miniatura }, `existentes`: famílias já cadastradas. */
+/** Erros de um item novo/editado. `f`: { nome, category_id, arquivo (.rfa ou .rvt), miniatura }, `existentes`: itens já cadastrados. */
 export function validarFamilia(f, existentes, { editandoId = null } = {}) {
   const erros = []
   const nome = (f.nome ?? '').trim()
@@ -54,8 +66,8 @@ export function validarFamilia(f, existentes, { editandoId = null } = {}) {
     }
   }
   if (!f.category_id) erros.push('Escolha a categoria.')
-  if (!editandoId && !f.rfa) erros.push('Selecione o arquivo .rfa.')
-  if (f.rfa && extensao(f.rfa.name) !== 'rfa') erros.push('O arquivo da família deve ser .rfa.')
+  if (!editandoId && !f.arquivo) erros.push('Selecione o arquivo (.rfa ou .rvt).')
+  if (f.arquivo && !EXTENSOES_ARQUIVO.includes(extensao(f.arquivo.name))) erros.push('O arquivo deve ser .rfa ou .rvt.')
   if (f.miniatura && extensao(f.miniatura.name) !== 'png') erros.push('A miniatura deve ser PNG.')
   return erros
 }
@@ -92,7 +104,7 @@ export function problemasPorNome(problemas) {
 }
 
 export const ROTULO_PROBLEMA = {
-  familia_ausente: '.rfa ausente',
+  familia_ausente: 'Arquivo ausente',
   thumbnail_ausente: 'Miniatura ausente',
   icone_ausente: 'Ícone ausente',
   tamanho_divergente: 'Tamanho diverge',

@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  chaveIcone, chaveMiniatura, chaveRfa, nomeEmUso, problemasPorNome, reordenar, slugify, validarCategoria, validarFamilia,
+  chaveArquivo, chaveIcone, chaveMiniatura, nomeEmUso, tipoDoArquivo, problemasPorNome, reordenar, slugify, validarCategoria, validarFamilia,
 } from '../src/lib/catalogo.js'
 
 test('slugify igual ao generate_catalog.py', () => {
@@ -11,10 +11,20 @@ test('slugify igual ao generate_catalog.py', () => {
   assert.equal(slugify('Ação ø Ünico'), 'acao-unico')
 })
 
-test('chaveRfa não sobrescreve arquivo existente', () => {
+test('chaveArquivo não sobrescreve arquivo existente e respeita a extensão', () => {
   const hash = 'abcdef0123456789'.repeat(4)
-  assert.equal(chaveRfa('ext', 'Extintor ABC', hash, new Set()), 'ext/extintor-abc.rfa')
-  assert.equal(chaveRfa('ext', 'Extintor ABC', hash, new Set(['ext/extintor-abc.rfa'])), 'ext/extintor-abc-abcdef01.rfa')
+  assert.equal(chaveArquivo('ext', 'Extintor ABC', hash, new Set(), 'rfa'), 'ext/extintor-abc.rfa')
+  assert.equal(chaveArquivo('ext', 'Extintor ABC', hash, new Set(['ext/extintor-abc.rfa']), 'rfa'), 'ext/extintor-abc-abcdef01.rfa')
+  assert.equal(chaveArquivo('mod', 'Projeto X', hash, new Set(), 'rvt'), 'mod/projeto-x.rvt')
+  // um .rfa com o mesmo nome não bloqueia o .rvt
+  assert.equal(chaveArquivo('mod', 'Projeto X', hash, new Set(['mod/projeto-x.rfa']), 'rvt'), 'mod/projeto-x.rvt')
+})
+
+test('tipoDoArquivo', () => {
+  assert.equal(tipoDoArquivo('a/b.rfa'), 'rfa')
+  assert.equal(tipoDoArquivo('a/b.RVT'), 'rvt')
+  assert.equal(tipoDoArquivo('a/b.zip'), null)
+  assert.equal(tipoDoArquivo(null), null)
 })
 
 test('chaves de miniatura e ícone', () => {
@@ -29,18 +39,19 @@ const existentes = [{ id: 'a__extintor-k', nome: 'Extintor K', ordem: 0 }]
 const arq = (name) => ({ name })
 
 test('validarFamilia: nome duplicado sem diferenciar maiúsculas, id colidindo, arquivos', () => {
-  const ok = { nome: 'Outro', category_id: 'a', rfa: arq('x.rfa'), miniatura: arq('x.png') }
+  const ok = { nome: 'Outro', category_id: 'a', arquivo: arq('x.rfa'), miniatura: arq('x.png') }
   assert.deepEqual(validarFamilia(ok, existentes), [])
   assert.match(validarFamilia({ ...ok, nome: 'extintor k' }, existentes)[0], /Já existe/)
   assert.match(validarFamilia({ ...ok, nome: 'Extintor-K' }, existentes).join(), /mesmo identificador/)
-  assert.deepEqual(validarFamilia({ ...ok, rfa: null }, existentes), ['Selecione o arquivo .rfa.'])
-  assert.deepEqual(validarFamilia({ ...ok, rfa: null }, existentes, { editandoId: 'x' }), [])
-  assert.match(validarFamilia({ ...ok, rfa: arq('x.zip') }, existentes)[0], /\.rfa/)
+  assert.deepEqual(validarFamilia({ ...ok, arquivo: null }, existentes), ['Selecione o arquivo (.rfa ou .rvt).'])
+  assert.deepEqual(validarFamilia({ ...ok, arquivo: null }, existentes, { editandoId: 'x' }), [])
+  assert.deepEqual(validarFamilia({ ...ok, arquivo: arq('projeto.RVT') }, existentes), [])
+  assert.match(validarFamilia({ ...ok, arquivo: arq('x.zip') }, existentes)[0], /\.rfa ou \.rvt/)
   assert.match(validarFamilia({ ...ok, miniatura: arq('x.jpg') }, existentes)[0], /PNG/)
 })
 
 test('validarFamilia ao editar ignora a própria família', () => {
-  const f = { nome: 'extintor k', category_id: 'a', rfa: null, miniatura: null }
+  const f = { nome: 'extintor k', category_id: 'a', arquivo: null, miniatura: null }
   assert.deepEqual(validarFamilia(f, existentes, { editandoId: 'a__extintor-k' }), [])
 })
 

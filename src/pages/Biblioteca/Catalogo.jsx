@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { definirIconeTodas, excluirFamilia, importarCatalogo, salvarOrdem } from '../../lib/apiCatalogo.js'
-import { BUCKET_ASSETS, ROTULO_PROBLEMA, reordenar } from '../../lib/catalogo.js'
+import { BUCKET_ASSETS, ROTULO_PROBLEMA, reordenar, tipoDoArquivo } from '../../lib/catalogo.js'
 import { enviarParaBucket } from '../../lib/storage.js'
 import { traduzirErroBanco } from '../../lib/licencas.js'
 import { formatarTamanho } from '../../lib/versoes.js'
@@ -141,7 +141,7 @@ export default function Catalogo() {
             <span className="espaco" />
             <button type="button" className="btn btn-primario" disabled={semCategorias}
               title={semCategorias ? 'Crie uma categoria primeiro' : ''}
-              onClick={() => setFormFamilia({ familia: null })}>Nova família</button>
+              onClick={() => setFormFamilia({ familia: null })}>Novo item</button>
           </div>
 
           <div className="grade-familias">
@@ -153,7 +153,10 @@ export default function Catalogo() {
                   <Miniatura chave={f.thumbnail_key} versao={f.atualizado_em} nome={f.nome} grande />
                   <div className="familia-info">
                     <strong title={f.nome}>{f.nome}</strong>
-                    <small className="muted">{nomeDaCategoria[f.category_id]} · {formatarTamanho(f.size_bytes)}</small>
+                    <small className="muted">
+                      {nomeDaCategoria[f.category_id]} · {formatarTamanho(f.size_bytes)}
+                      {tipoDoArquivo(f.storage_key) === 'rvt' && <span className="selo selo-rvt">RVT</span>}
+                    </small>
                     <div className="familia-selos">
                       {ps.map((p) => (
                         <span key={p.tipo} className={p.bloqueia ? 'selo selo-erro' : 'selo selo-aviso'} title={p.mensagem}>{ROTULO_PROBLEMA[p.tipo] ?? p.tipo}</span>

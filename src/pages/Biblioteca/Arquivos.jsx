@@ -6,7 +6,7 @@ import Confirma from '../../components/Confirma.jsx'
 import { useBiblioteca } from './contexto.jsx'
 import Miniatura from './Miniatura.jsx'
 
-const ROTULO_USO = { familia: '.rfa', thumbnail: 'miniatura', icone: 'ícone' }
+const ROTULO_USO = { familia: 'arquivo', thumbnail: 'miniatura', icone: 'ícone' }
 const chaveDe = (a) => `${a.bucket}/${a.key}`
 
 export default function Arquivos() {

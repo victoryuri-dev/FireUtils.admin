@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { importarCatalogo, publicarCatalogo, removerOrfaos } from '../../lib/apiCatalogo.js'
 import { dataHoraBr } from '../../lib/formato.js'
+import { tipoDoArquivo } from '../../lib/catalogo.js'
 import { useBiblioteca } from './contexto.jsx'
 
 function Lista({ titulo, itens, cor }) {
@@ -28,6 +29,7 @@ export default function Publicacao() {
   const avisos = problemas.filter((p) => !p.bloqueia)
   const orfaos = arquivos.filter((a) => a.situacao === 'orfao')
   const dif = publicacao.diferencas
+  const totalRvt = b.familias.filter((f) => tipoDoArquivo(f.storage_key) === 'rvt').length
   const rascunhoVazio = resumo.categorias === 0 && resumo.familias === 0
   const podePublicar = bloqueios.length === 0 && !publicacao.sincronizado && resumo.familias > 0
 
@@ -114,6 +116,16 @@ export default function Publicacao() {
         {rascunhoVazio && publicacao.existe && <p className="aviso">O rascunho está vazio e já existe um catálogo publicado: importe-o para começar a editar.</p>}
       </div>
 
+      {totalRvt > 0 && (
+        <div className="painel">
+          <h3>Arquivos .rvt no catálogo ({totalRvt})</h3>
+          <p className="aviso">
+            Os itens .rvt entram no catalog.json na mesma lista <code>families</code>, e quem consome o catálogo os distingue pela
+            extensão do <code>storage_key</code>. Confirme que o consumidor (dockpane ou outro) trata o .rvt antes de publicar,
+            porque um consumidor que só conhece .rfa pode tentar carregá-lo como família.
+          </p>
+        </div>
+      )}
       {bloqueios.length > 0 && (
         <div className="painel painel-erro">
           <h3>Impedem a publicação ({bloqueios.length})</h3>

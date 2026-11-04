@@ -5,8 +5,9 @@ import {
 } from '../../lib/apiVersoes.js'
 import { traduzirErroBanco } from '../../lib/licencas.js'
 import {
-  formatarTamanho, interpretarNome, nomeDaAssinatura, nomeDoHash, normalizarNotas, sha256Hex, validarNovaVersao,
+  formatarTamanho, interpretarNome, nomeDaAssinatura, nomeDoHash, normalizarNotas, validarNovaVersao,
 } from '../../lib/versoes.js'
+import { sha256Arquivo } from '../../lib/sha256.js'
 import EditorNotas from './EditorNotas.jsx'
 import PreviaNotas from './PreviaNotas.jsx'
 
@@ -68,7 +69,7 @@ export default function NovaVersao() {
     try {
       setEtapa('Calculando SHA-256…')
       setProgresso(0)
-      const hash = await sha256Hex(await f.arquivo.arrayBuffer())
+      const hash = await sha256Arquivo(f.arquivo, { aoProgredir: setProgresso })
 
       setEtapa('Registrando rascunho…')
       id = await criarRelease({
